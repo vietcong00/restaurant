@@ -123,10 +123,6 @@ export default class HomePage extends Vue {
         return productStore.getTotalProduct;
     }
 
-    get getNotifyResultSearch(): string {
-        return productStore.getNotifyResultSearch;
-    }
-
     get getProductSelected(): IProduct {
         return productStore.getProductSelected;
     }

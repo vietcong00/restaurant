@@ -83,12 +83,19 @@
             <el-table-column
                 prop="arrivalTime"
                 label="Thời gian tới"
-                width="250"
+                width="200"
                 sortable="custom"
             >
                 <template #default="scope">
                     <div class="booking__table__arrival_time">
                         {{ getTime(scope.row.arrivalTime) }}
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="idCategory" label="Số người" width="100">
+                <template #default="scope">
+                    <div class="booking__table__name_table">
+                        {{ scope.row.numberPeople }}
                     </div>
                 </template>
             </el-table-column>
@@ -106,7 +113,7 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column align="center" prop="id" label="Thao tác" width="200">
+            <el-table-column align="center" prop="id" label="Thao tác" width="150">
                 <template #default="scope">
                     <div class="booking__table__action">
                         <div class="booking-done">
@@ -124,12 +131,6 @@
                                 </template>
                             </el-popconfirm>
                         </div>
-                        <div
-                            class="booking-change-table"
-                            @click="openModal(scope.row.id)"
-                        >
-                            <comp-icon :iconName="'dinning-table-small-icon'" />
-                        </div>
                         <div class="booking-canceled">
                             <el-popconfirm
                                 confirm-button-text="Yes"
@@ -145,6 +146,12 @@
                                 </template>
                             </el-popconfirm>
                         </div>
+                        <div
+                            class="booking-change-table"
+                            @click="openModal(scope.row.id)"
+                        >
+                            <comp-icon :iconName="'dinning-table-small-icon'" />
+                        </div>
                     </div>
                 </template>
             </el-table-column>
@@ -157,7 +164,7 @@
 import { Options, Vue } from 'vue-class-component';
 
 import { ORDER_BY_DEFAULT, PAGE_SIZE_DEFAULT, PAGE_SIZE_OPTIONS } from '../../constants';
-import { IBooking, ICategory, IPageObject, ITextItem } from '../../types';
+import { IBooking, IPageObject, ITextItem } from '../../types';
 import CompIcon from '../../../../components/CompIcon.vue';
 import { productStore } from '../../store';
 import ModalChosenTable from './ModalChosenTable.vue';
@@ -186,8 +193,6 @@ export default class BookingTable extends Vue {
         return table.name;
     }
 
-    listCategory: ICategory[] = [];
-
     get checkShowModalChosenTable(): boolean {
         return productStore.checkShowModalChosenTable;
     }
@@ -196,21 +201,12 @@ export default class BookingTable extends Vue {
         return productStore.getBookingList;
     }
 
-    get getCategoryList(): ICategory[] {
-        this.listCategory = productStore.getCategoryList;
-        return this.listCategory;
-    }
-
     get getTotalBooking(): number {
         return productStore.getTotalBooking;
     }
 
     get getPageInfo(): IPageObject {
         return productStore.getPageBookingInfo;
-    }
-
-    get getNotifyResultSearch(): string {
-        return productStore.getNotifyResultSearch;
     }
 
     changePage(pageNumber: number): void {
@@ -222,20 +218,9 @@ export default class BookingTable extends Vue {
         productStore.updateCheckShowModalChosenTable(true);
     }
 
-    // editProduct(idProduct: number): void {
-    //     productStore.setTypeModal(EDIT_MODAL_KEYWORD);
-    //     let product = productStore.getBookingList.find((el) => el.id === idProduct);
-    //     product = product ?? { ...PRODUCT_SELECTED_DEFAULT };
-    //     productStore.setProductSelected(product);
-    // }
-
     indexMethod(index: number): number {
         const info = this.getPageInfo;
         return (+info?.page - 1) * +info?.limit + index + 1;
-    }
-
-    confirmDelete(idProduct: number): void {
-        productStore.deleteProduct(idProduct);
     }
 
     handleSort(sortData: any): void {
@@ -264,11 +249,8 @@ export default class BookingTable extends Vue {
 
     searchBooking(): void {
         if (this.bookingSearch === '') {
-            console.log('ahihi');
             productStore.getBookings();
         } else {
-            console.log('ahuhu');
-
             productStore.searchBooking(this.bookingSearch);
         }
     }
@@ -325,14 +307,14 @@ export default class BookingTable extends Vue {
     }
 }
 .booking-table-data {
-    width: 1002px;
+    width: 1000px;
     margin: 10px auto;
     .booking__table__action {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: space-between;
+        justify-content: space-around;
         margin: 0 18%;
         :hover {
             border-radius: 5px;

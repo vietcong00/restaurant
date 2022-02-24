@@ -47,53 +47,21 @@
 import { Options, Vue } from 'vue-class-component';
 import CompIcon from '../../../../components/CompIcon.vue';
 
-import {
-    CREATE_MODAL_KEYWORD,
-    PRODUCT_SELECTED_DEFAULT,
-    RULE_PRODUCT_ATTRIBUTE,
-} from '../../constants';
 import { productStore } from '../../store';
-import { ICategory, IProduct, ITable, TModalType } from '../../types';
+import { ITable } from '../../types';
 import TableDiagram from '../diagramTable/TableDiagram.vue';
 
 @Options({
-    name: 'modal-form-product-component',
+    name: 'modal-chosen-table',
 
     components: {
         CompIcon,
         TableDiagram,
     },
-    data() {
-        return {
-            product: { ...PRODUCT_SELECTED_DEFAULT },
-        };
-    },
-    watch: {
-        productProp: function (newVal) {
-            this.product = { ...newVal };
-        },
-    },
 })
-export default class ModalFormProduct extends Vue {
-    productProp!: IProduct;
-    product!: IProduct;
-    loading = false;
-    rules = RULE_PRODUCT_ATTRIBUTE;
-
-    declare $refs: {
-        product: any;
-    };
-
-    get getTypeModal(): TModalType {
-        return productStore.getTypeModal;
-    }
-
+export default class ModalChosenTable extends Vue {
     get getTableList(): Array<ITable> {
         return productStore.getTableList;
-    }
-
-    checkTypeModalIsCreate(): boolean {
-        return this.getTypeModal === CREATE_MODAL_KEYWORD;
     }
 
     closeModal(): void {
@@ -106,10 +74,6 @@ export default class ModalFormProduct extends Vue {
             idTable: productStore.getTableSelected,
         });
         this.closeModal();
-    }
-
-    setCategorySelected(category: ICategory): void {
-        this.product.category = category;
     }
 }
 </script>

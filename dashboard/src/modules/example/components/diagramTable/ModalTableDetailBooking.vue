@@ -156,14 +156,14 @@
                                 type="info"
                                 plain
                                 class="modal-button"
-                                @click="closeModal"
-                                ><div class="text-btn">Hủy</div></el-button
+                                @click="sendData('Ready')"
+                                ><div class="text-btn">Sẵn Sàng</div></el-button
                             >
                             <el-button
                                 type="danger"
                                 plain
                                 class="modal-button"
-                                @click="sendData()"
+                                @click="sendData('Used')"
                                 ><div class="text-btn">Đang sử dụng</div></el-button
                             >
                         </slot>
@@ -178,79 +178,27 @@
 import { Options, Vue } from 'vue-class-component';
 import CompIcon from '../../../../components/CompIcon.vue';
 
-import {
-    CREATE_MODAL_KEYWORD,
-    PRODUCT_SELECTED_DEFAULT,
-    RULE_PRODUCT_ATTRIBUTE,
-} from '../../constants';
 import { productStore } from '../../store';
-import { IBooking, ICategory, IProduct, TModalType } from '../../types';
+import { IBooking } from '../../types';
 
 @Options({
-    name: 'modal-form-product-component',
+    name: 'modal-table-detail-booking',
     components: {
         CompIcon,
     },
-    data() {
-        return {
-            product: { ...PRODUCT_SELECTED_DEFAULT },
-        };
-    },
-    watch: {
-        productProp: function (newVal) {
-            this.product = { ...newVal };
-        },
-    },
 })
 export default class ModalTableDetailBooking extends Vue {
-    productProp!: IProduct;
-    product!: IProduct;
-    loading = false;
-    rules = RULE_PRODUCT_ATTRIBUTE;
-
-    declare $refs: {
-        product: any;
-    };
-
-    get getTypeModal(): TModalType {
-        return productStore.getTypeModal;
-    }
-
     get getBookingTableDetailList(): IBooking[] {
         return productStore.getBookingTableDetailList;
     }
 
-    checkTypeModalIsCreate(): boolean {
-        return this.getTypeModal === CREATE_MODAL_KEYWORD;
-    }
-
     closeModal(): void {
         productStore.updateCheckShowModalTableDetail(false);
-        // productStore.getBookings();
     }
 
-    sendData(): void {
+    sendData(status: string): void {
         this.closeModal();
-        // (this.$refs?.product).validate(async (valid: unknown) => {
-        //     if (valid) {
-        //         productStore.setProductSelected(this.product);
-        //         switch (this.getTypeModal) {
-        //             case CREATE_MODAL_KEYWORD:
-        //                 await productStore.postProduct();
-        //                 break;
-        //             case EDIT_MODAL_KEYWORD:
-        //                 await productStore.patchProduct();
-        //                 break;
-        //         }
-        //         this.closeModal();
-        //     } else {
-        //         return false;
-        //     }
-        // });
-    }
-
-    setCategorySelected(category: ICategory): void {
-        this.product.category = category;
+        productStore.patchTable({ status: status });
     }
 
     checkTableNull(table: any): string {

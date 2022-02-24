@@ -50,9 +50,9 @@ export interface IGetTables {
 
 export interface IPatchQueryTable {
     status: string;
-    nameCustomer: string;
-    phone: string;
-    arrivalTime: string;
+    nameCustomer?: string;
+    phone?: string;
+    arrivalTime?: string;
 }
 export interface IRestaurant {
     id: number;

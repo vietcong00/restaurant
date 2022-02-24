@@ -164,10 +164,6 @@ export default class ProductTable extends Vue {
         return productStore.getPageInfo;
     }
 
-    get getNotifyResultSearch(): string {
-        return productStore.getNotifyResultSearch;
-    }
-
     changePage(pageNumber: number): void {
         productStore.setPageInfoProperty({ name: 'page', data: pageNumber });
     }

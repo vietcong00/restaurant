@@ -70,7 +70,6 @@ import GeneralInformation from './GeneralInformation.vue';
     },
 })
 export default class Header extends Vue {
-    searchBtnActice = false;
     inputSearch = '';
 }
 </script>
