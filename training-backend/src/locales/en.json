@@ -1,0 +1,11 @@
+{
+	"auth.login.wrongEmailOrPassword": "Incorrect email or password.",
+	"auth.login.oldPasswordIsNotCorrect": "The old password is incorrect.",
+	"auth.login.notAUser": "User does not exist",
+	"user.create.emailExist": "Email Exist",
+	"user.updatePassword.oldPasswordIsNotCorrect": "The old password is incorrect.",
+	"user.delete.accountIsUsing": "Account is Using",
+	"user.middleware.accountIsUsing": "User does not exist",
+	"product.create.categoryNotExist": "Category not exist",
+	"product.check.ProductNotExist": "Product not exist!"
+}

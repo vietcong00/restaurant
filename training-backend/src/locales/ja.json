@@ -1,0 +1,9 @@
+{
+	"auth.login.wrongEmailOrPassword": "Incorrect email or password",
+	"auth.login.oldPasswordIsNotCorrect": "The old password is incorrect.",
+	"auth.login.notAUser": "User does not exist",
+	"auth.login.oldPasswordNotCorrect": "auth.login.oldPasswordNotCorrect",
+	"user.create.emailExist":"Email Exist",
+	"product.check.ProductNotExist":"Product Not Exist",
+	"product.create.categoryNotExist":"Category Not Exist"
+}

@@ -1,0 +1,7 @@
+@import "./mixins/button";
+
+.modal-body{
+    .el-input__validateIcon {
+        display: none;
+    }
+}
