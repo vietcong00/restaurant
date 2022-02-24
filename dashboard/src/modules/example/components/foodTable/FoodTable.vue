@@ -3,7 +3,7 @@
         <el-pagination
             background
             layout="prev, pager, next"
-            :total="getTotalProduct"
+            :total="getTotalFood"
             :page-size="getPageInfo.limit"
             :current-page="getPageInfo.page"
             @current-change="changePage"
@@ -35,7 +35,7 @@
         </div>
     </div>
     <div class="product-table-data">
-        <el-table :data="getProductList" border @sort-change="handleSort">
+        <el-table :data="getFoodList" border @sort-change="handleSort">
             <el-table-column
                 align="center"
                 label="#"
@@ -121,12 +121,12 @@
 import { Options, Vue } from 'vue-class-component';
 import {
     EDIT_MODAL_KEYWORD,
+    FOOD_SELECTED_DEFAULT,
     ORDER_BY_DEFAULT,
     PAGE_SIZE_DEFAULT,
     PAGE_SIZE_OPTIONS,
-    PRODUCT_SELECTED_DEFAULT,
 } from '../../constants';
-import { ICategory, IPageObject, IProduct, ITextItem } from '../../types';
+import { ICategory, IFood, IPageObject, ITextItem } from '../../types';
 import CompIcon from '../../../../components/CompIcon.vue';
 import { productStore } from '../../store';
 
@@ -147,8 +147,8 @@ export default class ProductTable extends Vue {
 
     listCategory: ICategory[] = [];
 
-    get getProductList(): IProduct[] {
-        return productStore.getProductList;
+    get getFoodList(): IFood[] {
+        return productStore.getFoodList;
     }
 
     get getCategoryList(): ICategory[] {
@@ -156,8 +156,8 @@ export default class ProductTable extends Vue {
         return this.listCategory;
     }
 
-    get getTotalProduct(): number {
-        return productStore.getTotalProduct;
+    get getTotalFood(): number {
+        return productStore.getTotalFood;
     }
 
     get getPageInfo(): IPageObject {
@@ -168,11 +168,11 @@ export default class ProductTable extends Vue {
         productStore.setPageInfoProperty({ name: 'page', data: pageNumber });
     }
 
-    editProduct(idProduct: number): void {
+    editProduct(idFood: number): void {
         productStore.setTypeModal(EDIT_MODAL_KEYWORD);
-        let product = productStore.getProductList.find((el) => el.id === idProduct);
-        product = product ?? { ...PRODUCT_SELECTED_DEFAULT };
-        productStore.setProductSelected(product);
+        let food = productStore.getFoodList.find((el) => el.id === idFood);
+        food = food ?? { ...FOOD_SELECTED_DEFAULT };
+        productStore.setFoodSelected(food);
     }
 
     indexMethod(index: number): number {
@@ -198,7 +198,8 @@ export default class ProductTable extends Vue {
         sortData.prop = sortData.prop ?? ORDER_BY_DEFAULT;
         productStore.setPageInfoProperty({ name: 'orderBy', data: sortData.prop });
         productStore.setPageInfoProperty({ name: 'direction', data: sortData.order });
-        productStore.getProducts();
+        // productStore.getProducts();
+        productStore.getFoods();
     }
 }
 </script>

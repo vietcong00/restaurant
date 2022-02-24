@@ -11,6 +11,7 @@ import {
     NUMBER_CATEGORY_LOAD_DEFAULT,
     PRODUCT_SELECTED_DEFAULT,
     ID_DASHBOARDS,
+    FOOD_SELECTED_DEFAULT,
 } from './constants';
 import { getModule, VuexModule, Mutation, Action, Module } from 'vuex-module-decorators';
 import store from '@/store';
@@ -39,8 +40,10 @@ import {
 class ProductStore extends VuexModule {
     productList: Array<IProduct> = [];
     productSelected: IProduct = { ...PRODUCT_SELECTED_DEFAULT };
+    foodSelected: IFood = { ...FOOD_SELECTED_DEFAULT };
+
     typeModal: TModalType = CLOSE_MODAL_KEYWORD;
-    totalProduct = 0;
+    totalFood = 0;
     categoryList: Array<ICategory> = [];
     pageInfo: IPageObject = {
         page: CURRENT_PAGE_DEFAULT,
@@ -91,6 +94,10 @@ class ProductStore extends VuexModule {
         return this.productSelected;
     }
 
+    get getFoodSelected() {
+        return this.foodSelected;
+    }
+
     get getTypeModal() {
         return this.typeModal;
     }
@@ -99,8 +106,8 @@ class ProductStore extends VuexModule {
         return this.categoryList;
     }
 
-    get getTotalProduct() {
-        return this.totalProduct;
+    get getTotalFood() {
+        return this.totalFood;
     }
 
     get getPageInfo() {
@@ -182,8 +189,8 @@ class ProductStore extends VuexModule {
     }
 
     @Mutation
-    SET_TOTAL_PRODUCT(data: number) {
-        this.totalProduct = data;
+    SET_TOTAL_FOOD(data: number) {
+        this.totalFood = data;
     }
 
     @Mutation
@@ -270,6 +277,11 @@ class ProductStore extends VuexModule {
     }
 
     @Mutation
+    SET_FOOD_SELECTED(data: IFood) {
+        this.foodSelected = data;
+    }
+
+    @Mutation
     UPDATE_TOTAL_BOOKING(data: number) {
         this.totalBooking = data;
     }
@@ -308,7 +320,7 @@ class ProductStore extends VuexModule {
                 break;
             case ID_DASHBOARDS.ID_MENU:
                 this.SET_PAGE_INFO_PROPERTY({ name: 'limit', data });
-                this.getProducts();
+                // this.getProducts();
                 break;
             default:
                 break;
@@ -343,8 +355,8 @@ class ProductStore extends VuexModule {
     @Action
     setNotifyResultSearch() {
         let notifyResultSearch = `Kết quả tìm kiếm cho ${this.pageInfo.wordFilter};${this.pageInfo.idCategory}.`;
-        if (this.totalProduct) {
-            notifyResultSearch += ` Đã tìm thấy ${this.totalProduct} kết quả phù hợp!`;
+        if (this.totalFood) {
+            notifyResultSearch += ` Đã tìm thấy ${this.totalFood} kết quả phù hợp!`;
         } else {
             notifyResultSearch += ` Không tìm thấy kết quả phù hợp!`;
         }
@@ -363,7 +375,8 @@ class ProductStore extends VuexModule {
                 break;
             case ID_DASHBOARDS.ID_MENU:
                 this.SET_PAGE_INFO_PROPERTY({ name: property.name, data: property.data });
-                this.getProducts();
+                this.getFoods();
+                // this.getProducts();
                 break;
             default:
                 break;
@@ -378,6 +391,11 @@ class ProductStore extends VuexModule {
     @Action
     setProductSelected(data: IProduct) {
         this.SET_PRODUCT_SELECTED({ ...data });
+    }
+
+    @Action
+    setFoodSelected(data: IFood) {
+        this.SET_FOOD_SELECTED({ ...data });
     }
 
     @Action
@@ -431,71 +449,73 @@ class ProductStore extends VuexModule {
         this.UPDATE_TOTAL_BOOKING_TABLE_DETAIL(data);
     }
 
-    @Action
-    getProducts() {
-        const query: any = {
-            limit: this.pageInfo.limit,
-            page: this.pageInfo.page,
-            orderBy: this.pageInfo.orderBy,
-            direction: this.pageInfo.direction,
-        };
-        if (this.pageInfo.wordFilter) {
-            query.wordFilter = this.pageInfo.wordFilter;
-        }
+    // API Product
+    // @Action
+    // getProducts() {
+    //     const query: any = {
+    //         limit: this.pageInfo.limit,
+    //         page: this.pageInfo.page,
+    //         orderBy: this.pageInfo.orderBy,
+    //         direction: this.pageInfo.direction,
+    //     };
+    //     if (this.pageInfo.wordFilter) {
+    //         query.wordFilter = this.pageInfo.wordFilter;
+    //     }
 
-        if (this.pageInfo.idCategory) {
-            query.idCategory = this.pageInfo.idCategory;
-        }
-        productService.getList(query).then((response) => {
-            if (response.code === 200) {
-                this.SET_PRODUCTS(response.data.items);
-                this.SET_TOTAL_PRODUCT(response.data.totalItems);
-            }
-        });
-    }
+    //     if (this.pageInfo.idCategory) {
+    //         query.idCategory = this.pageInfo.idCategory;
+    //     }
+    //     productService.getList(query).then((response) => {
+    //         if (response.code === 200) {
+    //             this.SET_PRODUCTS(response.data.items);
+    //             this.SET_TOTAL_PRODUCT(response.data.totalItems);
+    //         }
+    //     });
+    // }
 
-    @Action
-    postProduct() {
-        productService
-            .create({
-                name: this.productSelected.name,
-                descriptions: this.productSelected.descriptions,
-                idCategory: this.productSelected.category?.id ?? '',
-            })
-            .then((response) => {
-                if (checkSuccessRequest(response)) {
-                    this.getProducts();
-                    this.setProductSelected({ ...PRODUCT_SELECTED_DEFAULT });
-                    this.refreshPage();
-                }
-            });
-    }
+    // @Action
+    // postProduct() {
+    //     productService
+    //         .create({
+    //             name: this.productSelected.name,
+    //             descriptions: this.productSelected.descriptions,
+    //             idCategory: this.productSelected.category?.id ?? '',
+    //         })
+    //         .then((response) => {
+    //             if (checkSuccessRequest(response)) {
+    //                 this.getProducts();
+    //                 this.setProductSelected({ ...PRODUCT_SELECTED_DEFAULT });
+    //                 this.refreshPage();
+    //             }
+    //         });
+    // }
 
-    @Action
-    patchProduct() {
-        productService
-            .update(this.productSelected.id, {
-                name: this.productSelected.name,
-                descriptions: this.productSelected.descriptions,
-                idCategory: this.productSelected.category?.id ?? '',
-            })
-            .then((response) => {
-                if (checkSuccessRequest(response)) {
-                    this.getProducts();
-                    this.setProductSelected({ ...PRODUCT_SELECTED_DEFAULT });
-                }
-            });
-    }
+    // @Action
+    // patchProduct() {
+    //     productService
+    //         .update(this.productSelected.id, {
+    //             name: this.productSelected.name,
+    //             descriptions: this.productSelected.descriptions,
+    //             idCategory: this.productSelected.category?.id ?? '',
+    //         })
+    //         .then((response) => {
+    //             if (checkSuccessRequest(response)) {
+    //                 this.getProducts();
+    //                 this.setProductSelected({ ...PRODUCT_SELECTED_DEFAULT });
+    //             }
+    //         });
+    // }
 
-    @Action
-    deleteProduct(idProduct: number) {
-        productService.delete(idProduct).then((response) => {
-            if (checkSuccessRequest(response)) {
-                this.getProducts();
-            }
-        });
-    }
+    // @Action
+    // deleteProduct(idProduct: number) {
+    //     productService.delete(idProduct).then((response) => {
+    //         if (checkSuccessRequest(response)) {
+    //             this.getProducts();
+    //         }
+    //     });
+    // }
 
+    // API Food
     @Action
     async getFoods() {
         const query: any = {
@@ -512,6 +532,75 @@ class ProductStore extends VuexModule {
         });
     }
 
+    @Action
+    postFood() {
+        foodService
+            .create({
+                name: this.foodSelected.name,
+                descriptions: this.foodSelected.descriptions,
+                idCategory: this.foodSelected.category?.id ?? '',
+                imgLink: this.foodSelected.imgLink ?? 'menu1.jpg',
+                price: this.foodSelected.price,
+            })
+            .then((response) => {
+                if (checkSuccessRequest(response)) {
+                    this.getFoods();
+                    this.setFoodSelected({ ...FOOD_SELECTED_DEFAULT });
+                    this.refreshPage();
+                }
+            });
+    }
+
+    @Action
+    patchFood() {
+        foodService
+            .update(this.foodSelected.id, {
+                name: this.foodSelected.name,
+                descriptions: this.foodSelected.descriptions,
+                idCategory: this.foodSelected.category?.id ?? '',
+                imgLink: this.foodSelected.imgLink ?? 'menu1.jpg',
+                price: this.foodSelected.price,
+            })
+            .then((response) => {
+                if (checkSuccessRequest(response)) {
+                    this.getFoods();
+                    this.setFoodSelected({ ...FOOD_SELECTED_DEFAULT });
+                }
+            });
+    }
+
+    @Action
+    deleteProduct(idProduct: number) {
+        productService.delete(idProduct).then((response) => {
+            if (checkSuccessRequest(response)) {
+                // this.getProducts();
+            }
+        });
+    }
+
+    @Action
+    search(dataSearch: { wordFilter: string; idCategory: number | string }) {
+        this.SET_PAGE_INFO_PROPERTY({ name: 'wordFilter', data: dataSearch.wordFilter });
+        this.SET_PAGE_INFO_PROPERTY({ name: 'idCategory', data: dataSearch.idCategory });
+        // this.getProducts();
+    }
+
+    @Action
+    refreshPage() {
+        this.SET_IS_SEARCHING(false);
+        this.setProductSelected({ ...PRODUCT_SELECTED_DEFAULT });
+        this.setPageInfoProperty({
+            name: 'wordFilter',
+            data: WORD_FILTER_DEFAULT,
+        });
+        this.setPageInfoProperty({
+            name: 'idCategory',
+            data: ID_CATEGORY_DEFAULT,
+        });
+        // this.getProducts();
+    }
+
+    // API Table
     @Action
     async getTables() {
         const query: any = {
@@ -538,6 +627,7 @@ class ProductStore extends VuexModule {
         });
     }
 
+    // API Restaurant
     @Action
     async getRestaurants() {
         const query: any = {
@@ -552,47 +642,9 @@ class ProductStore extends VuexModule {
                 this.UPDATE_RESTAURANT(response.data.items);
             }
         });
-        // this.UPDATE_PRODUCTS(result.products);
-        // this.UPDATE_FILTER_OPTIONS(result.filterOptions);
-        // this.UPDATE_PRODUCT_LIST_FILTER(result.products);
-        // this.changePage(CURRENT_PAGE_DEFAULT);
     }
 
-    @Action
-    bookTable() {
-        productService
-            .update(this.tableSelected, {
-                status: 'booked',
-            })
-            .then((response) => {
-                if (checkSuccessRequest(response)) {
-                    this.getTables();
-                }
-            });
-    }
-
-    @Action
-    search(dataSearch: { wordFilter: string; idCategory: number | string }) {
-        this.SET_PAGE_INFO_PROPERTY({ name: 'wordFilter', data: dataSearch.wordFilter });
-        this.SET_PAGE_INFO_PROPERTY({ name: 'idCategory', data: dataSearch.idCategory });
-        this.getProducts();
-    }
-
-    @Action
-    refreshPage() {
-        this.SET_IS_SEARCHING(false);
-        this.setProductSelected({ ...PRODUCT_SELECTED_DEFAULT });
-        this.setPageInfoProperty({
-            name: 'wordFilter',
-            data: WORD_FILTER_DEFAULT,
-        });
-        this.setPageInfoProperty({
-            name: 'idCategory',
-            data: ID_CATEGORY_DEFAULT,
-        });
-        this.getProducts();
-    }
-
+    // API Bookings
     @Action
     getBookings() {
         const query: any = {

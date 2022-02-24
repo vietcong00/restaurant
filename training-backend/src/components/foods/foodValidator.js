@@ -27,6 +27,8 @@ const createValidSchema = Joi.object().keys({
     name: Joi.string().trim().min(1).max(50),
     descriptions: Joi.string().trim().min(1).max(250),
     idCategory: Joi.number().integer().min(1).required(),
+    price: Joi.string().trim().min(1).max(250),
+    imgLink: Joi.string().trim().min(1).max(250),
 });
 
 export async function createValidator(req, res, next) {
@@ -46,6 +48,8 @@ const foodFormSchema = {
     name: Joi.string().min(1).max(50),
     descriptions: Joi.string().min(1).max(250),
     idCategory: Joi.number().integer().min(1),
+    price: Joi.string().trim().min(1).max(250),
+    imgLink: Joi.string().trim().min(1).max(250),
 };
 
 const updateValidSchema = Joi.object().keys(foodFormSchema);

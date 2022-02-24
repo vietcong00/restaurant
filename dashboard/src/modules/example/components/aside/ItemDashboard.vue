@@ -17,8 +17,10 @@
 </template>
 
 <script lang="ts">
+import { tokenService } from '@/utils/token';
 import { Options, Vue } from 'vue-class-component';
 import CompIcon from '../../../../components/CompIcon.vue';
+import { ID_DASHBOARDS } from '../../constants';
 import { productStore } from '../../store';
 import TableEat from '../diagramTable/TableEat.vue';
 
@@ -46,6 +48,10 @@ export default class ProductTable extends Vue {
     }
 
     selectItem(id: number): void {
+        if (id === ID_DASHBOARDS.ID_LOGOUT) {
+            tokenService.resetAll();
+            window.location.reload();
+        }
         productStore.updateIdItemDashboardSelected(id);
     }
 }

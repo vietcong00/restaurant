@@ -19,6 +19,15 @@ export const PRODUCT_SELECTED_DEFAULT = {
     category: CATEGORY_NULL,
 };
 
+export const FOOD_SELECTED_DEFAULT = {
+    id: -1,
+    name: '',
+    descriptions: '',
+    price: '',
+    category: CATEGORY_NULL,
+    imgLink: 'menu1.jpg',
+};
+
 export const PAGE_SIZE_OPTIONS = [
     { name: '2 per page', number: 2 },
     { name: '5 per page', number: 5 },
@@ -31,11 +40,11 @@ export const PAGE_SIZE_DEFAULT = { name: '20 per page', number: 20 };
 
 export const NUMBER_CATEGORY_LOAD_DEFAULT = 20;
 
-export const RULE_PRODUCT_ATTRIBUTE = {
+export const RULE_FOOD_ATTRIBUTE = {
     name: [
         {
             required: true,
-            message: 'Vui lòng điền tên sản phẩm!',
+            message: 'Vui lòng điền tên món ăn!',
             trigger: 'blur',
         },
         {
@@ -44,10 +53,22 @@ export const RULE_PRODUCT_ATTRIBUTE = {
             trigger: 'change',
         },
     ],
+    price: [
+        {
+            required: true,
+            message: 'Vui lòng điền giá món ăn!',
+            trigger: 'blur',
+        },
+        {
+            max: 50,
+            message: 'Độ dài của giá cần ít hơn 50 kí tự!',
+            trigger: 'change',
+        },
+    ],
     descriptions: [
         {
             required: true,
-            message: 'Hãy điền mô tả sản phẩm !',
+            message: 'Hãy điền mô tả moán ăn !',
             trigger: 'blur',
         },
         {
@@ -80,6 +101,7 @@ export const ID_DASHBOARDS: IDashboardIds = {
     ID_BOOKING: 2,
     ID_EMPLOYEE: 3,
     ID_DIAGRAM_TABLE: 4,
+    ID_LOGOUT: 5,
 };
 
 export const DASHBOARDS = [
@@ -88,6 +110,7 @@ export const DASHBOARDS = [
     { id: ID_DASHBOARDS.ID_BOOKING, icon: 'clock-icon', name: 'Danh sách đặt bàn' },
     { id: ID_DASHBOARDS.ID_EMPLOYEE, icon: 'user-group-icon', name: 'Nhân viên' },
     { id: ID_DASHBOARDS.ID_DIAGRAM_TABLE, icon: 'dinning-table-icon', name: 'Sơ đồ bàn' },
+    { id: ID_DASHBOARDS.ID_LOGOUT, icon: 'logout-icon', name: 'Đăng xuất' },
 ];
 
 export const LIMIT_ARRIVAL_TIME_BOOKING = 10800;

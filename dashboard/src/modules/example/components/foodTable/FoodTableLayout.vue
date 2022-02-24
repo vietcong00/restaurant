@@ -49,7 +49,7 @@
                     <div class="notify-data-search">
                         <comp-icon
                             :iconName="'light-icon'"
-                            :class="getTotalProduct ? 'icon-active' : ''"
+                            :class="getTotalFood ? 'icon-active' : ''"
                         />
                         Kết quả tìm kiếm cho từ khóa:
                         <span class="data-search" v-show="inputSearchShow">
@@ -61,9 +61,9 @@
                         </span>
                     </div>
                     <div class="notify-data-number">
-                        <div class="found-result" v-if="getTotalProduct > 0">
+                        <div class="found-result" v-if="getTotalFood > 0">
                             Đã tìm thấy
-                            <span class="number-result">{{ getTotalProduct }}</span>
+                            <span class="number-result">{{ getTotalFood }}</span>
                             kết quả tìm kiếm phù hợp.
                         </div>
                         <div class="-not-found-result" v-else>
@@ -74,10 +74,7 @@
                 </div>
             </div>
             <food-table />
-            <modal-form-product
-                v-show="checkTypeModal"
-                :productProp="getProductSelected"
-            />
+            <modal-form-food v-show="checkTypeModal" :foodProp="getFoodSelected" />
         </div>
     </div>
 </template>
@@ -86,8 +83,8 @@
 import { Options, Vue } from 'vue-class-component';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import FoodTable from './FoodTable.vue';
-import ModalFormProduct from './ModalFormProduct.vue';
-import { ICategory, IProduct } from '../../types';
+import ModalFormFood from './ModalFormFood.vue';
+import { ICategory, IFood } from '../../types';
 import { CLOSE_MODAL_KEYWORD, CREATE_MODAL_KEYWORD } from '../../constants';
 import CompIcon from '../../../../components/CompIcon.vue';
 import SelectCategory from './SelectCategory.vue';
@@ -98,7 +95,7 @@ import { productStore } from '../../store';
     components: {
         HelloWorld,
         FoodTable,
-        ModalFormProduct,
+        ModalFormFood,
         CompIcon,
         SelectCategory,
     },
@@ -119,12 +116,12 @@ export default class HomePage extends Vue {
         return productStore.getTypeModal !== CLOSE_MODAL_KEYWORD;
     }
 
-    get getTotalProduct(): number {
-        return productStore.getTotalProduct;
+    get getTotalFood(): number {
+        return productStore.getTotalFood;
     }
 
-    get getProductSelected(): IProduct {
-        return productStore.getProductSelected;
+    get getFoodSelected(): IFood {
+        return productStore.getFoodSelected;
     }
 
     get checkIsSearching(): boolean {
@@ -155,7 +152,8 @@ export default class HomePage extends Vue {
     }
 
     created(): void {
-        productStore.getProducts();
+        // productStore.getProducts();
+        productStore.getFoods();
         productStore.getCategories('');
     }
 }

@@ -16,9 +16,9 @@
                     <div class="modal-body">
                         <slot name="body">
                             <el-form
-                                ref="product"
+                                ref="food"
                                 status-icon
-                                :model="product"
+                                :model="food"
                                 label-width="150px"
                                 class="demo-dynamic"
                                 :rules="rules"
@@ -30,25 +30,25 @@
                                 >
                                     <el-input
                                         class="element-data"
-                                        v-model="product.id"
+                                        v-model="food.id"
                                         disabled
                                     />
                                 </el-form-item>
                                 <el-form-item label="Tên sản phẩm" prop="name">
                                     <el-input
-                                        v-model="product.name"
+                                        v-model="food.name"
                                         placeholder="Ví dụ: Laptop MinhVu"
                                     />
                                 </el-form-item>
                                 <el-form-item label="Giá" prop="price">
                                     <el-input
-                                        v-model="product.price"
+                                        v-model="food.price"
                                         placeholder="Ví dụ: 100.000 VNĐ"
                                     />
                                 </el-form-item>
                                 <el-form-item label="Mô tả" prop="descriptions">
                                     <el-input
-                                        v-model="product.descriptions"
+                                        v-model="food.descriptions"
                                         :autosize="{ minRows: 2, maxRows: 4 }"
                                         type="textarea"
                                         placeholder="Hãy nhập gì đó bất kỳ!"
@@ -56,7 +56,7 @@
                                 </el-form-item>
                                 <el-form-item label="Danh mục" prop="category">
                                     <select-category
-                                        :categoryProp="product.category"
+                                        :categoryProp="food.category"
                                         @handleSelectCategory="setCategorySelected"
                                     />
                                 </el-form-item>
@@ -96,17 +96,17 @@ import CompIcon from '../../../../components/CompIcon.vue';
 import {
     CREATE_MODAL_KEYWORD,
     EDIT_MODAL_KEYWORD,
-    PRODUCT_SELECTED_DEFAULT,
-    RULE_PRODUCT_ATTRIBUTE,
+    FOOD_SELECTED_DEFAULT,
+    RULE_FOOD_ATTRIBUTE,
 } from '../../constants';
 import { productStore } from '../../store';
-import { ICategory, IProduct, TModalType } from '../../types';
+import { ICategory, IFood, TModalType } from '../../types';
 import SelectCategory from './SelectCategory.vue';
 
 @Options({
-    name: 'modal-form-product-component',
+    name: 'modal-form-food-component',
     props: {
-        productProp: Object as PropType<IProduct>,
+        foodProp: Object as PropType<IFood>,
     },
     components: {
         CompIcon,
@@ -114,23 +114,23 @@ import SelectCategory from './SelectCategory.vue';
     },
     data() {
         return {
-            product: { ...PRODUCT_SELECTED_DEFAULT },
+            food: { ...FOOD_SELECTED_DEFAULT },
         };
     },
     watch: {
-        productProp: function (newVal) {
-            this.product = { ...newVal };
+        foodProp: function (newVal) {
+            this.food = { ...newVal };
         },
     },
 })
-export default class ModalFormProduct extends Vue {
-    productProp!: IProduct;
-    product!: IProduct;
+export default class ModalFormFood extends Vue {
+    foodProp!: IFood;
+    food!: IFood;
     loading = false;
-    rules = RULE_PRODUCT_ATTRIBUTE;
+    rules = RULE_FOOD_ATTRIBUTE;
 
     declare $refs: {
-        product: any;
+        food: any;
     };
 
     get getTypeModal(): TModalType {
@@ -143,20 +143,20 @@ export default class ModalFormProduct extends Vue {
 
     closeModal(): void {
         productStore.setTypeModal('Close');
-        this.$refs.product.resetFields();
-        productStore.setProductSelected({ ...PRODUCT_SELECTED_DEFAULT });
+        this.$refs.food.resetFields();
+        productStore.setFoodSelected({ ...FOOD_SELECTED_DEFAULT });
     }
 
     sendData(): void {
-        (this.$refs?.product).validate(async (valid: unknown) => {
+        (this.$refs?.food).validate(async (valid: unknown) => {
             if (valid) {
-                productStore.setProductSelected(this.product);
+                productStore.setFoodSelected(this.food);
                 switch (this.getTypeModal) {
                     case CREATE_MODAL_KEYWORD:
-                        await productStore.postProduct();
+                        await productStore.postFood();
                         break;
                     case EDIT_MODAL_KEYWORD:
-                        await productStore.patchProduct();
+                        await productStore.patchFood();
                         break;
                 }
                 this.closeModal();
@@ -167,7 +167,7 @@ export default class ModalFormProduct extends Vue {
     }
 
     setCategorySelected(category: ICategory): void {
-        this.product.category = category;
+        this.food.category = category;
     }
 }
 </script>

@@ -27,7 +27,9 @@ export interface IFood {
     id: number;
     name: string;
     price: string;
+    descriptions: string;
     imgLink: string;
+    category: ICategory;
 }
 
 export interface IGetFoods {
@@ -72,6 +74,7 @@ export interface IDashboardIds {
     ID_BOOKING: number;
     ID_EMPLOYEE: number;
     ID_DIAGRAM_TABLE: number;
+    ID_LOGOUT: number;
 }
 
 export interface IProduct {
