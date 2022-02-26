@@ -102,6 +102,8 @@ export const ID_DASHBOARDS: IDashboardIds = {
     ID_EMPLOYEE: 3,
     ID_DIAGRAM_TABLE: 4,
     ID_LOGOUT: 5,
+    ID_PAYMENT: 6,
+    ID_BILL: 7,
 };
 
 export const DASHBOARDS = [
@@ -110,7 +112,33 @@ export const DASHBOARDS = [
     { id: ID_DASHBOARDS.ID_BOOKING, icon: 'clock-icon', name: 'Danh sách đặt bàn' },
     { id: ID_DASHBOARDS.ID_EMPLOYEE, icon: 'user-group-icon', name: 'Nhân viên' },
     { id: ID_DASHBOARDS.ID_DIAGRAM_TABLE, icon: 'dinning-table-icon', name: 'Sơ đồ bàn' },
+    { id: ID_DASHBOARDS.ID_BILL, icon: 'bill-icon', name: 'Hóa đơn' },
+    { id: ID_DASHBOARDS.ID_PAYMENT, icon: 'currency-dollar-icon', name: 'Thanh toán' },
     { id: ID_DASHBOARDS.ID_LOGOUT, icon: 'logout-icon', name: 'Đăng xuất' },
+];
+
+export const TAB_DASHBOARD_DECENTRALIZATION = [
+    {
+        position: 'Supervisor',
+        listTab: [
+            ID_DASHBOARDS.ID_STATISTICAL,
+            ID_DASHBOARDS.ID_MENU,
+            ID_DASHBOARDS.ID_BOOKING,
+            ID_DASHBOARDS.ID_EMPLOYEE,
+            ID_DASHBOARDS.ID_DIAGRAM_TABLE,
+            ID_DASHBOARDS.ID_BILL,
+            ID_DASHBOARDS.ID_PAYMENT,
+            ID_DASHBOARDS.ID_LOGOUT,
+        ],
+    },
+    {
+        position: 'Cashier',
+        listTab: [
+            ID_DASHBOARDS.ID_BILL,
+            ID_DASHBOARDS.ID_PAYMENT,
+            ID_DASHBOARDS.ID_LOGOUT,
+        ],
+    },
 ];
 
 export const LIMIT_ARRIVAL_TIME_BOOKING = 10800;

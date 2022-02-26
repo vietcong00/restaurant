@@ -1,5 +1,6 @@
 <template>
     <div
+        v-show="checkPosition(idItem)"
         class="item-dashboard"
         @click="selectItem(idItem)"
         :class="idItem === getIdItemDashBoardSelected ? 'selected' : ''"
@@ -20,7 +21,7 @@
 import { tokenService } from '@/utils/token';
 import { Options, Vue } from 'vue-class-component';
 import CompIcon from '../../../../components/CompIcon.vue';
-import { ID_DASHBOARDS } from '../../constants';
+import { ID_DASHBOARDS, TAB_DASHBOARD_DECENTRALIZATION } from '../../constants';
 import { productStore } from '../../store';
 import TableEat from '../diagramTable/TableEat.vue';
 
@@ -53,6 +54,25 @@ export default class ProductTable extends Vue {
             window.location.reload();
         }
         productStore.updateIdItemDashboardSelected(id);
+    }
+
+    checkPosition(idItem: number): boolean {
+        var tabPosition = TAB_DASHBOARD_DECENTRALIZATION.find(function (user) {
+            return user.position === tokenService.getProfile().position;
+        });
+
+        var index = tabPosition?.listTab.findIndex(function (idTab) {
+            return idTab === idItem;
+        });
+        console.log('seattttt position: ' + tokenService.getProfile().position);
+        console.log('seattttt tabPosition: ' + tabPosition);
+        console.log('seattttt indexTab: ' + index);
+        console.log('seattttt idItem: ' + idItem);
+        if (index === -1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 </script>

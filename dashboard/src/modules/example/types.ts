@@ -75,6 +75,8 @@ export interface IDashboardIds {
     ID_EMPLOYEE: number;
     ID_DIAGRAM_TABLE: number;
     ID_LOGOUT: number;
+    ID_PAYMENT: number;
+    ID_BILL: number;
 }
 
 export interface IProduct {

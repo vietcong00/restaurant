@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         position: {
             allowNull: false,
-            type: DataTypes.ENUM('supervisor', 'cashier', 'waiter'),
+            type: DataTypes.ENUM('Supervisor', 'Cashier', 'Waiter'),
         },
         idRestaurant: {
             type: DataTypes.INTEGER(10).UNSIGNED,

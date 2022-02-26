@@ -23,7 +23,7 @@ module.exports = {
       },
       position: {
         allowNull: false,
-        type: Sequelize.ENUM('supervisor', 'cashier', 'waiter'),
+        type: Sequelize.ENUM('Supervisor', 'Cashier', 'Waiter'),
       },
       idRestaurant: {
         type: Sequelize.INTEGER(10).UNSIGNED,
