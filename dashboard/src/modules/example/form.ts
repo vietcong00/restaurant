@@ -4,8 +4,8 @@ import * as yup from 'yup';
 
 export const initLoginForm = () => {
     const formValues = {
-        email: 'tientung@gmail.com',
-        password: '123456',
+        email: 'user1@tokyotechlab.com',
+        password: 'tt@1234',
         // email: '',
         // password: '',
     };

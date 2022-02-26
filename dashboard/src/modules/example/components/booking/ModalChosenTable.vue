@@ -93,6 +93,7 @@ export default class ModalChosenTable extends Vue {
 
     closeModal(): void {
         productStore.getBookings();
+        productStore.setNumberPeople(-1);
         productStore.updateCheckShowModalChosenTable(false);
     }
 
