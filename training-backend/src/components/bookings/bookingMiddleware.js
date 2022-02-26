@@ -5,19 +5,26 @@ import {
 import { logger } from '../../helpers/logger';
 import { ErrorCodes } from '../../helpers/constants';
 import { BOOKING_ATTRIBUTES } from './bookingConstant';
+import bookingService from './bookingService';
+
 
 const db = require('../../models');
 
 export async function checkExistBooking(req, res, next) {
     try {
         const { id } = req.params;
-        const booking = await db.Booking.findByPk(id, {
+        let booking = await db.Booking.findByPk(id, {
             attributes: BOOKING_ATTRIBUTES,
             raw: true,
         });
         if (!booking) {
             return res.json(respondWithError(ErrorCodes.ERROR_CODE_PRODUCT_NOT_EXIST, i18n.__('booking.check.BookingNotExist'), {}));
         }
+        bookingService.checkTimeBookBooking(booking);
+        booking = await db.Booking.findByPk(id, {
+            attributes: BOOKING_ATTRIBUTES,
+            raw: true,
+        });
         req.bookingData = booking;
         return next();
     } catch (e) {

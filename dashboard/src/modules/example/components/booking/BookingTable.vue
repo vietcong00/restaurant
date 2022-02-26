@@ -108,7 +108,7 @@
             </el-table-column>
             <el-table-column prop="idCategory" label="Trạng thái" width="100">
                 <template #default="scope">
-                    <div class="booking__table__status">
+                    <div class="booking__table__status" :class="scope.row.status">
                         {{ scope.row.status }}
                     </div>
                 </template>
@@ -148,7 +148,13 @@
                         </div>
                         <div
                             class="booking-change-table"
-                            @click="openModal(scope.row.id)"
+                            @click="
+                                openModal(
+                                    scope.row.id,
+                                    scope.row.arrivalTime,
+                                    scope.row.numberPeople,
+                                )
+                            "
                         >
                             <comp-icon :iconName="'dinning-table-small-icon'" />
                         </div>
@@ -178,6 +184,7 @@ import ModalChosenTable from './ModalChosenTable.vue';
 })
 export default class BookingTable extends Vue {
     bookingSearch = '';
+    interval: any;
     pageSizes = PAGE_SIZE_OPTIONS;
     pageSizeSelected = PAGE_SIZE_DEFAULT.name;
 
@@ -213,8 +220,10 @@ export default class BookingTable extends Vue {
         productStore.setPageInfoProperty({ name: 'page', data: pageNumber });
     }
 
-    openModal(id: number): void {
+    openModal(id: number, arrivalTime: number, numberPeople: number): void {
+        productStore.setArrivalTimeSelected(arrivalTime);
         productStore.updateIdBookingSelected(id);
+        productStore.setNumberPeople(numberPeople);
         productStore.updateCheckShowModalChosenTable(true);
     }
 
@@ -273,6 +282,14 @@ export default class BookingTable extends Vue {
         var date = new Date(timeStamp * 1000);
         var dt = this.formatTime(date) + ' ' + this.formatDate(date);
         return dt;
+    }
+
+    created(): void {
+        this.interval = setInterval(() => productStore.getBookings(), 10000);
+    }
+
+    destroyed(): void {
+        clearInterval(this.interval);
     }
 }
 </script>

@@ -44,11 +44,14 @@
 </template>
 
 <script lang="ts">
+import { ElMessageBox } from 'element-plus';
 import { Options, Vue } from 'vue-class-component';
 import CompIcon from '../../../../components/CompIcon.vue';
+import { LIMIT_ARRIVAL_TIME_BOOKING } from '../../constants';
 
 import { productStore } from '../../store';
-import { ITable } from '../../types';
+import { IBooking, ITable } from '../../types';
+import { getTimeFormatString } from '../../util';
 import TableDiagram from '../diagramTable/TableDiagram.vue';
 
 @Options({
@@ -64,16 +67,81 @@ export default class ModalChosenTable extends Vue {
         return productStore.getTableList;
     }
 
+    get getTableSelected(): number {
+        return productStore.getTableSelected;
+    }
+
+    get getNumberPeople(): number {
+        return productStore.getNumberPeople;
+    }
+
+    get getArrivalTimeSelected(): number {
+        return productStore.getArrivalTimeSelected;
+    }
+
+    get getBookingTableDetailList(): Array<IBooking> {
+        return productStore.getBookingTableDetailList;
+    }
+
+    get getNumberSeatSelected(): number {
+        return productStore.getNumberSeatSelected;
+    }
+
+    get checkCanChosenTable(): boolean {
+        return productStore.checkCanChosenTable;
+    }
+
     closeModal(): void {
         productStore.getBookings();
         productStore.updateCheckShowModalChosenTable(false);
     }
 
     sendData(): void {
-        productStore.patchBooking({
-            idTable: productStore.getTableSelected,
-        });
-        this.closeModal();
+        if (this.checkCanChosenTable) {
+            let fail = false;
+            for (let i = 0; i < this.getBookingTableDetailList.length; i++) {
+                const timeStamp = this.getBookingTableDetailList[i].arrivalTime;
+                fail = this.checkTimeBooking(this.getArrivalTimeSelected, timeStamp);
+                if (fail) {
+                    break;
+                }
+            }
+            if (!fail) {
+                productStore.patchBooking({
+                    idTable: productStore.getTableSelected,
+                });
+                this.closeModal();
+            }
+        } else {
+            const textWarning = `Vui lòng chọn bàn khác!`;
+            ElMessageBox.alert(textWarning, 'Warning', {
+                confirmButtonText: 'OK',
+            });
+        }
+    }
+
+    checkTimeBooking(oldTime: number, newTIme: number): boolean {
+        if (Math.abs(oldTime - newTIme) < LIMIT_ARRIVAL_TIME_BOOKING) {
+            const textWarning = `Bàn bạn vừa chọn đã bị đặt chỗ từ trước. Khách hàng sẽ đến vào lúc ${getTimeFormatString(
+                oldTime,
+            )}, Vui lòng chọn bàn khác!`;
+            ElMessageBox.alert(textWarning, 'Warning', {
+                confirmButtonText: 'OK',
+            });
+            return true;
+        }
+        return false;
+    }
+
+    checkNumberSeat(numberPeople: number, numberSeat: number): boolean {
+        if (numberPeople > numberSeat) {
+            const textWarning = `Yêu cầu đặt bàn có ${numberPeople} chỗ. Bàn bạn vừa chọn chỉ có ${numberSeat} chỗ. Vui lòng chọn bàn khác!`;
+            ElMessageBox.alert(textWarning, 'Warning', {
+                confirmButtonText: 'OK',
+            });
+            return false;
+        }
+        return true;
     }
 }
 </script>

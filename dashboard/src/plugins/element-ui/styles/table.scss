@@ -73,3 +73,17 @@
         }
     }
 }
+
+.booking-table-data {
+    .Waiting {
+        color: blue;
+    }
+
+    .Canceled {
+        color: red;
+    }
+
+    .Done {
+        color: green;
+    }
+}

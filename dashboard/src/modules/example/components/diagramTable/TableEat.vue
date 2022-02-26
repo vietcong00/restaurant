@@ -2,7 +2,7 @@
     <div class="table-item" :class="idTable === getTableSelected ? 'selected' : status">
         <div
             class="table-layout"
-            @click="selectTable(idTable, status, numberSeat, arrivalTimeBooking)"
+            @click="selectTable(checkShowModalChosenTable, idTable, status, numberSeat)"
             :class="numberSeat < getNumberPeople ? 'not-enough' : ''"
         >
             <img
@@ -22,12 +22,10 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { ElMessageBox } from 'element-plus';
 import { productStore } from '../../store';
 import ModalTableDetailBooking from './ModalTableDetailBooking.vue';
 import { IBooking } from '../../types';
-import { LIMIT_ARRIVAL_TIME_BOOKING } from '../../constants';
-import { getTimeFormatString } from '../../util';
+import { ElMessageBox } from 'element-plus';
 
 @Options({
     name: 'table',
@@ -44,10 +42,6 @@ import { getTimeFormatString } from '../../util';
         status: {
             type: String,
         },
-        arrivalTimeBooking: {
-            type: Number,
-            default: 0,
-        },
     },
     components: {
         ModalTableDetailBooking,
@@ -58,8 +52,8 @@ export default class ProductTable extends Vue {
         return productStore.getTableSelected;
     }
 
-    get getNumberPeople(): number {
-        return productStore.getNumberPeople;
+    get getArrivalTimeSelected(): number {
+        return productStore.getArrivalTimeSelected;
     }
 
     get checkShowModalTableDetail(): boolean {
@@ -72,6 +66,14 @@ export default class ProductTable extends Vue {
 
     get getBookingTableDetailList(): Array<IBooking> {
         return productStore.getBookingTableDetailList;
+    }
+
+    get getNumberPeople(): number {
+        return productStore.getNumberPeople;
+    }
+
+    get getNumberSeatSelected(): number {
+        return productStore.getNumberSeatSelected;
     }
 
     getImgLink(numberSeat: number): string {
@@ -94,43 +96,23 @@ export default class ProductTable extends Vue {
     }
 
     selectTable(
+        isChosenTableModal: boolean,
         idTable: number,
         status: string,
         numberSeat: number,
-        arrivalTimeBooking: number,
     ): void {
         productStore.setTableSelected(idTable);
-        if (this.checkShowModalChosenTable) {
-            productStore.getBookingsOfTableDetail();
-            for (let i = 0; i < this.getBookingTableDetailList.length; i++) {
-                const timeStamp = this.getBookingTableDetailList[i].arrivalTime;
-                const numberPeople = this.getBookingTableDetailList[i].numberPeople;
-                console.log('seattttttttt: ', this.getBookingTableDetailList[i]);
-                if (this.checkTimeBooking(arrivalTimeBooking, timeStamp)) {
-                    if (this.checkNumberSeat(numberSeat, numberPeople)) {
-                        break;
-                    }
-                } else {
-                    break;
-                }
-            }
+        productStore.setNumberSeatSelected(numberSeat);
+        productStore.getBookingsOfTableDetail();
+        console.log('seatttttt: ' + this.getNumberPeople, numberSeat);
+
+        if (isChosenTableModal) {
+            productStore.setCanChosenTable(
+                this.checkNumberSeat(this.getNumberPeople, numberSeat),
+            );
         } else {
-            productStore.getBookingsOfTableDetail();
             productStore.updateCheckShowModalTableDetail(true);
         }
-    }
-
-    checkTimeBooking(oldTime: number, newTIme: number): boolean {
-        if (Math.abs(oldTime - newTIme) < LIMIT_ARRIVAL_TIME_BOOKING) {
-            const textWarning = `Bàn bạn vừa chọn đã bị đặt chỗ từ trước. Khách hàng sẽ đến vào lúc ${getTimeFormatString(
-                oldTime,
-            )}, Vui lòng chọn bàn khác!`;
-            ElMessageBox.alert(textWarning, 'Warning', {
-                confirmButtonText: 'OK',
-            });
-            return false;
-        }
-        return true;
     }
 
     checkNumberSeat(numberPeople: number, numberSeat: number): boolean {

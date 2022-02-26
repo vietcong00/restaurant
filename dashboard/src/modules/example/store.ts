@@ -85,6 +85,17 @@ class ProductStore extends VuexModule {
     isShowModalChosenTable = false;
     isShowModalTableDetail = false;
     idBookingSelected = -1;
+    arrivalTimeSelected = -1;
+    numberSeatSelected = 0;
+    canChosenTable = false;
+
+    get checkCanChosenTable() {
+        return this.canChosenTable;
+    }
+
+    get getNumberSeatSelected() {
+        return this.numberSeatSelected;
+    }
 
     get getProductList() {
         return this.productList;
@@ -176,6 +187,25 @@ class ProductStore extends VuexModule {
 
     get checkShowModalTableDetail() {
         return this.isShowModalTableDetail;
+    }
+
+    get getArrivalTimeSelected() {
+        return this.arrivalTimeSelected;
+    }
+
+    @Mutation
+    SET_CAN_CHOSEN_TABLE(data: boolean) {
+        this.canChosenTable = data;
+    }
+
+    @Mutation
+    SET_NUMBER_SEAT_SELECTED(data: number) {
+        this.numberSeatSelected = data;
+    }
+
+    @Mutation
+    SET_ARRIVAL_TIME_SELECTED(data: number) {
+        this.arrivalTimeSelected = data;
     }
 
     @Mutation
@@ -449,6 +479,20 @@ class ProductStore extends VuexModule {
         this.UPDATE_TOTAL_BOOKING_TABLE_DETAIL(data);
     }
 
+    @Action
+    setArrivalTimeSelected(data: number) {
+        this.SET_ARRIVAL_TIME_SELECTED(data);
+    }
+
+    @Action
+    setNumberSeatSelected(data: number) {
+        this.SET_NUMBER_SEAT_SELECTED(data);
+    }
+
+    @Action
+    setCanChosenTable(data: boolean) {
+        this.SET_CAN_CHOSEN_TABLE(data);
+    }
     // API Product
     // @Action
     // getProducts() {
@@ -711,6 +755,7 @@ class ProductStore extends VuexModule {
             if (checkSuccessRequest(response)) {
                 this.getBookings();
                 this.getTables();
+                this.SET_CAN_CHOSEN_TABLE(false);
             }
         });
     }

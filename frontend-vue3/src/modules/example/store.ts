@@ -29,6 +29,7 @@ import {
     IPatchQueryTable,
     IPostQueryBooking,
 } from './types';
+import { ElMessageBox } from 'element-plus';
 
 @Module({ dynamic: true, namespaced: true, store, name: 'productStore' })
 class ProductStore extends VuexModule {
@@ -54,7 +55,7 @@ class ProductStore extends VuexModule {
     tableList: Array<ITable> = [];
     restaurantList: Array<IRestaurant> = [];
     tableSelected = -1;
-    numberPeople = -1;
+    numberPeople = 1;
     idRestaurant = 1;
 
     get getTypeModal() {
@@ -313,8 +314,10 @@ class ProductStore extends VuexModule {
     @Action
     postBooking(query: IPostQueryBooking) {
         bookingService.create(query).then((response) => {
-            if (checkSuccessRequest(response)) {
-            }
+            const textWarning = `Đơn đặt bàn của quý khách sẽ được giữ tối đa 30 phút so với thời gian đặt bàn! Quý khách vui lòng đến đúng giờ !`;
+            ElMessageBox.alert(textWarning, 'Thông báo', {
+                confirmButtonText: 'OK',
+            });
         });
     }
 }

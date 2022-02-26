@@ -52,7 +52,7 @@ export const initBookingForm = () => {
     });
 
     const onSubmit = handleSubmit(async (form) => {
-        let date = new Date(form.arrivalTime);
+        const date = new Date(form.arrivalTime);
         const formBooking = {
             numberPeople: productStore.getNumberPeople,
             nameCustomer: form.nameCustomer,
@@ -60,6 +60,7 @@ export const initBookingForm = () => {
             idRestaurant: productStore.getIdRestaurant,
             arrivalTime: date.getTime() / 1000,
         };
+        console.log(form.nameCustomer);
         await productStore.postBooking(formBooking);
     });
 

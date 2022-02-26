@@ -11,13 +11,13 @@ import { TABLE_ATTRIBUTES } from '../tables/tableConstant';
 const db = require('../../models');
 
 async function checkTimeBookBooking(booking) {
-    if (booking.status === 'booked') {
+    if (booking.status === 'Waiting') {
         const { id } = booking;
         const now = new Date();
-        if (Date.parse(now) - booking.arrivalTime > TIME_BOOK_LIMIT) {
-            booking.status = 'ready';
-            booking.arrivalTime = 0;
-            await db.Booking.update(booking, {
+        if (Date.parse(now) / 1000 - booking.arrivalTime > TIME_BOOK_LIMIT) {
+            const isSuccess = await db.Booking.update({
+                status: 'Canceled',
+            }, {
                 where: { id },
             });
         }
@@ -27,6 +27,15 @@ async function checkTimeBookBooking(booking) {
 async function getListBooking(query) {
     try {
         const idRestaurant = +query.idRestaurant;
+        const resultTest = await db.Booking.findAndCountAll({
+            where: {
+                idRestaurant,
+                status: 'Waiting',
+            },
+        });
+        resultTest.rows.forEach((element) => {
+            checkTimeBookBooking(element);
+        });
         let whereQuery = [];
         if (query.wordFilter !== undefined && query.wordFilter !== '') {
             const wordFilter = query.wordFilter ?? '';
@@ -106,6 +115,7 @@ async function updateBooking(id, bookingData) {
         const isSuccess = await db.Booking.update(bookingData, {
             where: { id },
         });
+
         const newBooking = await db.Booking.findByPk(id);
         if (bookingData.idTable !== undefined && newBooking.status === 'Waiting') {
             const { idTable } = bookingData;
@@ -137,4 +147,5 @@ module.exports = {
     getListBooking,
     updateBooking,
     createBooking,
+    checkTimeBookBooking,
 };
