@@ -67,6 +67,18 @@ async function getListTable(query) {
 
 async function updateTable(id, tableData) {
     try {
+        if (tableData.status === 'ready') {
+            const result = await db.Booking.findAndCountAll({
+                where: {
+                    idTable: id,
+                    status: 'Waiting',
+                },
+            });
+
+            if (result.count >= 1) {
+                tableData.status = 'booked';
+            }
+        }
         const isSuccess = await db.Table.update(tableData, {
             where: { id },
         });

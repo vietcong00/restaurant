@@ -104,12 +104,18 @@ async function updateBooking(id, bookingData) {
                     status: 'Waiting',
                 },
             });
-            if (result.count <= 1) {
-                await db.Table.update({ status: 'ready' }, {
-                    where: {
-                        id: idTable,
-                    },
-                });
+            const table = await db.Table.findByPk(oldBooking.idTable, {
+                attributes: TABLE_ATTRIBUTES,
+                raw: true,
+            });
+            if (table.status !== 'used') {
+                if (result.count <= 1) {
+                    await db.Table.update({ status: 'ready' }, {
+                        where: {
+                            id: idTable,
+                        },
+                    });
+                }
             }
         }
         const isSuccess = await db.Booking.update(bookingData, {
@@ -119,11 +125,17 @@ async function updateBooking(id, bookingData) {
         const newBooking = await db.Booking.findByPk(id);
         if (bookingData.idTable !== undefined && newBooking.status === 'Waiting') {
             const { idTable } = bookingData;
-            await db.Table.update({ status: 'booked' }, {
-                where: {
-                    id: idTable,
-                },
+            const table = await db.Table.findByPk(bookingData.idTable, {
+                attributes: TABLE_ATTRIBUTES,
+                raw: true,
             });
+            if (table.status !== 'used') {
+                await db.Table.update({ status: 'booked' }, {
+                    where: {
+                        id: idTable,
+                    },
+                });
+            }
         }
 
         return isSuccess;

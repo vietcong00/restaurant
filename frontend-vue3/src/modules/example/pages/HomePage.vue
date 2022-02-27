@@ -383,7 +383,6 @@ import { ElMessageBox } from 'element-plus';
     },
 })
 export default class HomePage extends Vue {
-    arrivalTime = '';
     showModal = true;
     inputSearch = '';
     selectCategory: ICategory = {
@@ -452,13 +451,13 @@ export default class HomePage extends Vue {
 
     checkTime(): boolean {
         const now = new Date();
-        console.log(now.getTime(), Date.parse(this.arrivalTime));
+        console.log(now.getTime(), Date.parse(this.form.arrivalTime!));
 
-        if (now.getTime() > Date.parse(this.arrivalTime)) {
-            ElMessageBox.alert('Vui lòng chọn thời gian trong tương lai', 'Chú ý', {
+        if (now.getTime() > Date.parse(this.form.arrivalTime!)) {
+            ElMessageBox.alert('Vui lòng chọn thời gian trong tương lai!', 'Chú ý', {
                 confirmButtonText: 'OK',
                 callback: () => {
-                    this.arrivalTime = '';
+                    this.form.arrivalTime = '';
                 },
             });
             return false;

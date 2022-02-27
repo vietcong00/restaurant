@@ -1,22 +1,26 @@
 <template>
-    <div class="table-item" :class="idTable === getTableSelected ? 'selected' : status">
-        <div
-            class="table-layout"
-            @click="selectTable(checkShowModalChosenTable, idTable, status, numberSeat)"
-            :class="numberSeat < getNumberPeople ? 'not-enough' : ''"
-        >
-            <img
-                class="table-img"
-                :src="
-                    require(`../../../../assets/images/table/table-${getImgLink(
-                        numberSeat,
-                    )}.png`)
+    <div class="table-item" :class="idTable === getTableSelected ? 'selected' : ''">
+        <div :class="status">
+            <div
+                class="table-layout"
+                @click="
+                    selectTable(checkShowModalChosenTable, idTable, status, numberSeat)
                 "
-                alt=""
-            />
-            <div class="table-name">{{ name }}</div>
+                :class="numberSeat < getNumberPeople ? 'not-enough' : ''"
+            >
+                <img
+                    class="table-img"
+                    :src="
+                        require(`../../../../assets/images/table/table-${getImgLink(
+                            numberSeat,
+                        )}.png`)
+                    "
+                    alt=""
+                />
+                <div class="table-name">{{ name }}</div>
+            </div>
+            <modal-table-detail-booking v-show="checkShowModalTableDetail" />
         </div>
-        <modal-table-detail-booking v-show="checkShowModalTableDetail" />
     </div>
 </template>
 
@@ -26,6 +30,7 @@ import { productStore } from '../../store';
 import ModalTableDetailBooking from './ModalTableDetailBooking.vue';
 import { IBooking } from '../../types';
 import { ElMessageBox } from 'element-plus';
+import { LIMIT_ARRIVAL_TIME_BOOKING } from '../../constants';
 
 @Options({
     name: 'table',
@@ -106,13 +111,26 @@ export default class ProductTable extends Vue {
         productStore.getBookingsOfTableDetail();
         console.log('seatttttt: ' + this.getNumberPeople, numberSeat);
 
+        let success = false;
         if (isChosenTableModal) {
-            productStore.setCanChosenTable(
-                this.checkNumberSeat(this.getNumberPeople, numberSeat),
-            );
+            if (this.checkNumberSeat(this.getNumberPeople, numberSeat)) {
+                success = true;
+                const now = new Date();
+                if (
+                    Math.abs(now.getTime() / 1000 - this.getArrivalTimeSelected) <
+                    LIMIT_ARRIVAL_TIME_BOOKING
+                ) {
+                    const textWarning = `Bàn bạn vừa chọn đang được sử dụng. Vui lòng chọn bàn khác!`;
+                    ElMessageBox.alert(textWarning, 'Warning', {
+                        confirmButtonText: 'OK',
+                    });
+                    success = false;
+                }
+            }
         } else {
             productStore.updateCheckShowModalTableDetail(true);
         }
+        productStore.setCanChosenTable(success);
     }
 
     checkNumberSeat(numberPeople: number, numberSeat: number): boolean {
@@ -149,31 +167,37 @@ export default class ProductTable extends Vue {
             font-weight: 700;
         }
     }
+    .table-layout {
+        padding: 10px;
+    }
 }
 
 .not-enough {
     padding: 10px;
     background: #e6e6e6;
     border: 1px solid #ffeded;
+    border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    opacity: 0.5;
+    opacity: 0.2;
     cursor: none;
 }
 
 .selected {
-    background: #8dff93;
     border: 1px solid #ff0000;
+    border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .booked {
     background: #ebff78;
+    border-radius: 10px;
     border: 1px solid #c2c2c2;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .used {
     background: #9eb3fa;
+    border-radius: 10px;
     border: 1px solid #c2c2c2;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
