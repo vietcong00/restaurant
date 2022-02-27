@@ -732,8 +732,6 @@ class ProductStore extends VuexModule {
         };
 
         bookingService.getList(query).then((response) => {
-            console.log(response);
-
             if (response.code === 200) {
                 this.UPDATE_BOOKING_TABLE_DETAIL_LIST(response.data.items);
                 this.UPDATE_TOTAL_BOOKING_TABLE_DETAIL(response.data.totalItems);

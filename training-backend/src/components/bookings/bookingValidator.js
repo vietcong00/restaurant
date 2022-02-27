@@ -76,6 +76,7 @@ const getBookingListValidSchema = Joi.object().keys({
     idRestaurant: Joi.number().required(),
     idTable: Joi.number(),
     wordFilter: Joi.string(),
+    status: Joi.string(),
 });
 
 export async function getBookingListValidator(req, res, next) {
