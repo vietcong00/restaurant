@@ -43,7 +43,7 @@ const sendRefreshToken = async () => {
         };
         await appService.setUserToken(token);
     } else {
-        logout();
+        // logout();
     }
     return response.data;
 };
@@ -63,10 +63,10 @@ export default class AuthMiddleware extends HttpMiddleware {
                 refreshTokenExpiredAt <= new Date().getTime()
             ) {
                 // refresh token expired
-                logout();
+                // logout();
             } else {
                 // check refresh token ok, call refresh token api
-                await throttled();
+                // await throttled();
             }
         }
         // set authorization
