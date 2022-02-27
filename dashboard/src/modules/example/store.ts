@@ -569,9 +569,18 @@ class ProductStore extends VuexModule {
             direction: this.pageInfo.direction,
         };
 
+        if (this.pageInfo.wordFilter) {
+            query.wordFilter = this.pageInfo.wordFilter;
+        }
+
+        if (this.pageInfo.idCategory) {
+            query.idCategory = this.pageInfo.idCategory;
+        }
+
         foodService.getList(query).then((response) => {
             if (response.code === 200) {
                 this.UPDATE_FOODS(response.data.items);
+                this.SET_TOTAL_FOOD(response.data.totalItems);
             }
         });
     }
@@ -588,9 +597,9 @@ class ProductStore extends VuexModule {
             })
             .then((response) => {
                 if (checkSuccessRequest(response)) {
-                    this.getFoods();
                     this.setFoodSelected({ ...FOOD_SELECTED_DEFAULT });
                     this.refreshPage();
+                    this.getFoods();
                 }
             });
     }
@@ -615,7 +624,7 @@ class ProductStore extends VuexModule {
 
     @Action
     deleteProduct(idProduct: number) {
-        productService.delete(idProduct).then((response) => {
+        foodService.delete(idProduct).then((response) => {
             if (checkSuccessRequest(response)) {
                 // this.getProducts();
             }
@@ -627,6 +636,7 @@ class ProductStore extends VuexModule {
         this.SET_PAGE_INFO_PROPERTY({ name: 'wordFilter', data: dataSearch.wordFilter });
         this.SET_PAGE_INFO_PROPERTY({ name: 'idCategory', data: dataSearch.idCategory });
         // this.getProducts();
+        this.getFoods();
     }
 
     @Action
