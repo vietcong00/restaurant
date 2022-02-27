@@ -467,6 +467,7 @@ export default class HomePage extends Vue {
     }
 
     form = setup(() => initBookingForm());
+
     async book(): Promise<void> {
         await this.form.onSubmit();
     }

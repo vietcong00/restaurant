@@ -109,22 +109,22 @@ export default class ProductTable extends Vue {
         productStore.setTableSelected(idTable);
         productStore.setNumberSeatSelected(numberSeat);
         productStore.getBookingsOfTableDetail();
-        console.log('seatttttt: ' + this.getNumberPeople, numberSeat);
-
         let success = false;
         if (isChosenTableModal) {
             if (this.checkNumberSeat(this.getNumberPeople, numberSeat)) {
                 success = true;
-                const now = new Date();
-                if (
-                    Math.abs(now.getTime() / 1000 - this.getArrivalTimeSelected) <
-                    LIMIT_ARRIVAL_TIME_BOOKING
-                ) {
-                    const textWarning = `Bàn bạn vừa chọn đang được sử dụng. Vui lòng chọn bàn khác!`;
-                    ElMessageBox.alert(textWarning, 'Warning', {
-                        confirmButtonText: 'OK',
-                    });
-                    success = false;
+                if (status === 'used') {
+                    const now = new Date();
+                    if (
+                        Math.abs(now.getTime() / 1000 - this.getArrivalTimeSelected) <
+                        LIMIT_ARRIVAL_TIME_BOOKING
+                    ) {
+                        const textWarning = `Bàn bạn vừa chọn đang được sử dụng. Vui lòng chọn bàn khác!`;
+                        ElMessageBox.alert(textWarning, 'Warning', {
+                            confirmButtonText: 'OK',
+                        });
+                        success = false;
+                    }
                 }
             }
         } else {

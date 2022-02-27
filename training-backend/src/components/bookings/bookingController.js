@@ -32,12 +32,6 @@ export async function create(req, res) {
     try {
         const booking = req.body;
         booking.status = 'Waiting';
-        console.log('------------------------');
-        console.log('------------------------');
-        console.log(booking);
-        console.log('------------------------');
-        console.log('------------------------');
-
         // booking.createdBy = req.loginUser.id;
         const result = await bookingService.createBooking(booking);
         return res.json(result);
