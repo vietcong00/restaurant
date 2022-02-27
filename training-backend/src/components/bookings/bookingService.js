@@ -71,6 +71,12 @@ async function getListBooking(query) {
             const idTable = +query.idTable;
             whereQuery[0].and.push({ idTable });
         }
+
+        if (query.status) {
+            const { status } = query.status;
+            whereQuery[0].and.push(status);
+        }
+
         const result = await db.Booking.findAndCountAll({
             offset: query.offset,
             limit: query.limit,
@@ -95,29 +101,32 @@ async function getListBooking(query) {
 
 async function updateBooking(id, bookingData) {
     try {
+        // update idTable of this booking
         const oldBooking = await db.Booking.findByPk(id);
         if (oldBooking.idTable != null) {
             const { idTable } = oldBooking;
-            const result = await db.Booking.findAndCountAll({
-                where: {
-                    idTable,
-                    status: 'Waiting',
-                },
-            });
-            const table = await db.Table.findByPk(oldBooking.idTable, {
-                attributes: TABLE_ATTRIBUTES,
-                raw: true,
-            });
-            if (table.status !== 'used') {
-                if (result.count <= 1) {
-                    await db.Table.update({ status: 'ready' }, {
-                        where: {
-                            id: idTable,
-                        },
-                    });
+            if (bookingData.status !== undefined) {
+                switch (bookingData.status) {
+                    case 'Done':
+                        await db.Table.update({ status: 'used' }, {
+                            where: {
+                                id: idTable,
+                            },
+                        });
+                        break;
+                    case 'Canceled':
+                        await db.Table.update({ status: this.checkBookingTable(idTable) }, {
+                            where: {
+                                id: idTable,
+                            },
+                        });
+                        break;
+                    default:
+                        break;
                 }
             }
         }
+
         const isSuccess = await db.Booking.update(bookingData, {
             where: { id },
         });
@@ -130,6 +139,11 @@ async function updateBooking(id, bookingData) {
                 raw: true,
             });
             if (table.status !== 'used') {
+                console.log('---------------------');
+                console.log('---------------------');
+                console.log('bottom: ', table);
+                console.log('---------------------');
+                console.log('---------------------');
                 await db.Table.update({ status: 'booked' }, {
                     where: {
                         id: idTable,
@@ -143,6 +157,27 @@ async function updateBooking(id, bookingData) {
         logger.error(`Error in updateBooking ${error.message}`);
         throw error;
     }
+}
+
+async function checkBookingTable(idTable) {
+    const result = await db.Booking.findAndCountAll({
+        where: {
+            idTable,
+            status: 'Waiting',
+        },
+    });
+    const table = await db.Table.findByPk(idTable, {
+        attributes: TABLE_ATTRIBUTES,
+        raw: true,
+    });
+    if (table.status !== 'used') {
+        if (result.count <= 1) {
+            return 'ready';
+        }
+
+        return 'booked';
+    }
+    return 'used';
 }
 
 async function createBooking(bookingData) {

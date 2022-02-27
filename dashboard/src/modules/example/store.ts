@@ -728,6 +728,7 @@ class ProductStore extends VuexModule {
             direction: this.pageBookingInfo.direction,
             idRestaurant: tokenService.getProfile().idRestaurant,
             idTable: this.tableSelected,
+            status: 'Waiting',
         };
 
         bookingService.getList(query).then((response) => {

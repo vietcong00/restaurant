@@ -254,6 +254,18 @@ export default class BookingTable extends Vue {
         productStore.patchBooking({
             status: status,
         });
+        let tableStatus = '';
+        switch (status) {
+            case 'Done':
+                tableStatus = 'used';
+                break;
+            case 'Canceled':
+                tableStatus = 'ready';
+                break;
+            default:
+                break;
+        }
+        productStore.patchTable({ status: tableStatus });
     }
 
     searchBooking(): void {
