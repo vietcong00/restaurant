@@ -157,14 +157,14 @@
                                 plain
                                 class="modal-button"
                                 @click="sendData('Ready')"
-                                ><div class="text-btn">Sẵn Sàng</div></el-button
+                                ><div class="text-btn">Đã sử dụng xong </div></el-button
                             >
                             <el-button
                                 type="danger"
                                 plain
                                 class="modal-button"
                                 @click="sendData('Used')"
-                                ><div class="text-btn">Đang sử dụng</div></el-button
+                                ><div class="text-btn">Bắt đầu sử dụng</div></el-button
                             >
                         </slot>
                     </div>
