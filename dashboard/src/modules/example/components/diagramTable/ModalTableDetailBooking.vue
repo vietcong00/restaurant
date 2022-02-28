@@ -157,7 +157,7 @@
                                 plain
                                 class="modal-button"
                                 @click="sendData('Ready')"
-                                ><div class="text-btn">Đã sử dụng xong </div></el-button
+                                ><div class="text-btn">Đã sử dụng xong</div></el-button
                             >
                             <el-button
                                 type="danger"
@@ -206,6 +206,25 @@ export default class ModalTableDetailBooking extends Vue {
             return 'Chưa chọn bàn';
         }
         return table.name;
+    }
+
+    changeStatus(id: number, status: string): void {
+        productStore.updateIdBookingSelected(id);
+        productStore.patchBooking({
+            status: status,
+        });
+        let tableStatus = '';
+        switch (status) {
+            case 'Done':
+                tableStatus = 'used';
+                break;
+            case 'Canceled':
+                tableStatus = 'ready';
+                break;
+            default:
+                break;
+        }
+        productStore.patchTable({ status: tableStatus });
     }
 
     formatDate(date: Date): string {

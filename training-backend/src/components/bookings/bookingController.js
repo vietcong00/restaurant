@@ -19,6 +19,8 @@ export async function getList(req, res) {
             idRestaurant: query.idRestaurant,
             idTable: query.idTable,
             wordFilter: query.wordFilter,
+            status: query.status,
+
         });
         return res.json(
             respondSuccess({ items: result.bookings, totalItems: result.total }),

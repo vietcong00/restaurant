@@ -64,10 +64,6 @@ export default class ProductTable extends Vue {
         var index = tabPosition?.listTab.findIndex(function (idTab) {
             return idTab === idItem;
         });
-        console.log('seattttt position: ' + tokenService.getProfile().position);
-        console.log('seattttt tabPosition: ' + tabPosition);
-        console.log('seattttt indexTab: ' + index);
-        console.log('seattttt idItem: ' + idItem);
         if (index === -1) {
             return false;
         } else {

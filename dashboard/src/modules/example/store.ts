@@ -734,6 +734,8 @@ class ProductStore extends VuexModule {
         bookingService.getList(query).then((response) => {
             if (response.code === 200) {
                 this.UPDATE_BOOKING_TABLE_DETAIL_LIST(response.data.items);
+                console.log('seattttt: ', response.data.items);
+
                 this.UPDATE_TOTAL_BOOKING_TABLE_DETAIL(response.data.totalItems);
             }
         });
@@ -764,6 +766,7 @@ class ProductStore extends VuexModule {
             if (checkSuccessRequest(response)) {
                 this.getBookings();
                 this.getTables();
+                this.getBookingsOfTableDetail();
                 this.SET_CAN_CHOSEN_TABLE(false);
             }
         });

@@ -95,15 +95,9 @@ async function getListBooking(query) {
             whereQuery[0].and.push({ idTable });
         }
 
-        if (query.status) {
-            const { status } = query.status;
-            whereQuery[0].and.push(status);
+        if (query.status !== undefined) {
+            whereQuery[0].and.push({ status: query.status });
         }
-        console.log('---------------------');
-        console.log('---------------------');
-        console.log('ahihi: ', query);
-        console.log('---------------------');
-        console.log('---------------------');
 
         const result = await db.Booking.findAndCountAll({
             offset: query.offset,
@@ -119,6 +113,14 @@ async function getListBooking(query) {
                 attributes: TABLE_ATTRIBUTES,
             }],
         });
+        if (query.status !== undefined) {
+            console.log('---------------------');
+            console.log('---------------------');
+            console.log('kuuuuuugaaaaaa: ', whereQuery[0].and[0], whereQuery[0].and[1], whereQuery[0].and[2]);
+            console.log('---------------------');
+            console.log('---------------------');
+        }
+
         return { bookings: result.rows, total: result.count };
     } catch (error) {
         logger.error(`Error in getBookingListAndTotal ${error.message}`);

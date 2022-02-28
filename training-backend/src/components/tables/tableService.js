@@ -67,12 +67,6 @@ async function getListTable(query) {
 
 async function updateTable(id, tableData) {
     try {
-        console.log('---------------------');
-        console.log('---------------------');
-        console.log(tableData);
-        console.log('---------------------');
-        console.log('---------------------');
-
         if (tableData.status === 'ready') {
             const result = await db.Booking.findAndCountAll({
                 where: {
